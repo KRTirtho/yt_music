@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:yt_music/models/search/group.dart';
-import 'package:yt_music/models/search/result.dart';
+import 'package:yt_music/src/models/search/group.dart';
+import 'package:yt_music/src/models/search/result.dart';
 
 part 'podcast.g.dart';
 

@@ -1,6 +1,6 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:yt_music/mixins/search.dart';
-import 'package:yt_music/models/search/result.dart';
+import 'package:yt_music/src/mixins/search.dart';
+import 'package:yt_music/src/models/search/result.dart';
 
 part 'group.g.dart';
 

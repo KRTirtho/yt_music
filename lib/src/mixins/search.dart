@@ -1,4 +1,4 @@
-import 'package:yt_music/models/search/result.dart';
+import 'package:yt_music/src/models/search/result.dart';
 
 mixin ExpandSearchResultGroup {
   Future<List<SearchResult>> expand() {

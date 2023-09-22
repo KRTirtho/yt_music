@@ -1,15 +1,15 @@
-import 'package:yt_music/client.dart';
-import 'package:yt_music/extensions/duration.dart';
-import 'package:yt_music/handler.dart';
-import 'package:yt_music/models/search/album.dart';
-import 'package:yt_music/models/search/artist.dart';
-import 'package:yt_music/models/search/episode.dart';
-import 'package:yt_music/models/search/playlist.dart';
-import 'package:yt_music/models/search/podcast.dart';
-import 'package:yt_music/models/search/profile.dart';
-import 'package:yt_music/models/search/result.dart';
-import 'package:yt_music/models/search/song.dart';
-import 'package:yt_music/models/search/video.dart';
+import 'package:yt_music/src/client.dart';
+import 'package:yt_music/src/extensions/duration.dart';
+import 'package:yt_music/src/handler.dart';
+import 'package:yt_music/src/models/search/album.dart';
+import 'package:yt_music/src/models/search/artist.dart';
+import 'package:yt_music/src/models/search/episode.dart';
+import 'package:yt_music/src/models/search/playlist.dart';
+import 'package:yt_music/src/models/search/podcast.dart';
+import 'package:yt_music/src/models/search/profile.dart';
+import 'package:yt_music/src/models/search/result.dart';
+import 'package:yt_music/src/models/search/song.dart';
+import 'package:yt_music/src/models/search/video.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
 

@@ -1,12 +1,12 @@
 import 'package:json_annotation/json_annotation.dart';
-import 'package:yt_music/models/search/album.dart';
-import 'package:yt_music/models/search/artist.dart';
-import 'package:yt_music/models/search/episode.dart';
-import 'package:yt_music/models/search/playlist.dart';
-import 'package:yt_music/models/search/podcast.dart';
-import 'package:yt_music/models/search/profile.dart';
-import 'package:yt_music/models/search/song.dart';
-import 'package:yt_music/models/search/video.dart';
+import 'package:yt_music/src/models/search/album.dart';
+import 'package:yt_music/src/models/search/artist.dart';
+import 'package:yt_music/src/models/search/episode.dart';
+import 'package:yt_music/src/models/search/playlist.dart';
+import 'package:yt_music/src/models/search/podcast.dart';
+import 'package:yt_music/src/models/search/profile.dart';
+import 'package:yt_music/src/models/search/song.dart';
+import 'package:yt_music/src/models/search/video.dart';
 
 part 'result.g.dart';
 
