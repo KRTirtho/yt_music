@@ -26,7 +26,7 @@ Map<String, dynamic> _$ProfileSearchResultToJson(
 ProfileSearchResultGroup _$ProfileSearchResultGroupFromJson(
         Map<String, dynamic> json) =>
     ProfileSearchResultGroup(
-      title: json['title'] as String,
+      query: json['query'] as String,
       params: json['params'] as String,
       items: (json['items'] as List<dynamic>)
           .map((e) => SearchResult.fromJson(e as Map<String, dynamic>))
@@ -36,7 +36,7 @@ ProfileSearchResultGroup _$ProfileSearchResultGroupFromJson(
 Map<String, dynamic> _$ProfileSearchResultGroupToJson(
         ProfileSearchResultGroup instance) =>
     <String, dynamic>{
-      'title': instance.title,
+      'query': instance.query,
       'params': instance.params,
       'items': instance.items,
     };

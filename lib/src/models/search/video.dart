@@ -36,7 +36,7 @@ final class VideoSearchResultGroup extends SearchResultGroup {
   List<VideoSearchResult> get items => super.items as List<VideoSearchResult>;
 
   VideoSearchResultGroup({
-    required super.title,
+    required super.query,
     required super.params,
     required super.items,
   });

@@ -8,7 +8,7 @@ part of 'group.dart';
 
 SearchResultGroup _$SearchResultGroupFromJson(Map<String, dynamic> json) =>
     SearchResultGroup(
-      title: json['title'] as String,
+      query: json['query'] as String,
       params: json['params'] as String,
       items: (json['items'] as List<dynamic>)
           .map((e) => SearchResult.fromJson(e as Map<String, dynamic>))
@@ -17,7 +17,7 @@ SearchResultGroup _$SearchResultGroupFromJson(Map<String, dynamic> json) =>
 
 Map<String, dynamic> _$SearchResultGroupToJson(SearchResultGroup instance) =>
     <String, dynamic>{
-      'title': instance.title,
+      'query': instance.query,
       'params': instance.params,
       'items': instance.items,
     };

@@ -29,7 +29,7 @@ final class ProfileSearchResultGroup extends SearchResultGroup {
       super.items as List<ProfileSearchResult>;
 
   ProfileSearchResultGroup({
-    required super.title,
+    required super.query,
     required super.params,
     required super.items,
   });

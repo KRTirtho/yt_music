@@ -33,7 +33,7 @@ final class AlbumSearchResultGroup extends SearchResultGroup {
   List<AlbumSearchResult> get items => super.items as List<AlbumSearchResult>;
 
   AlbumSearchResultGroup({
-    required super.title,
+    required super.query,
     required super.params,
     required super.items,
   });

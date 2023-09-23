@@ -1,9 +1,12 @@
+import 'dart:convert';
+
 import 'package:yt_music/src/client.dart';
 import 'package:yt_music/src/extensions/duration.dart';
 import 'package:yt_music/src/handler.dart';
 import 'package:yt_music/src/models/search/album.dart';
 import 'package:yt_music/src/models/search/artist.dart';
 import 'package:yt_music/src/models/search/episode.dart';
+import 'package:yt_music/src/models/search/group.dart';
 import 'package:yt_music/src/models/search/playlist.dart';
 import 'package:yt_music/src/models/search/podcast.dart';
 import 'package:yt_music/src/models/search/profile.dart';
@@ -12,6 +15,42 @@ import 'package:yt_music/src/models/search/song.dart';
 import 'package:yt_music/src/models/search/video.dart';
 // ignore: depend_on_referenced_packages
 import 'package:collection/collection.dart';
+
+enum ShelfTitle {
+  videos("Videos"),
+  songs("Songs"),
+  albums("Albums"),
+  artists("Artists"),
+  playlists("Community playlists"),
+  podcasts("Podcasts"),
+  episodes("Episodes"),
+  profiles("Profiles");
+
+  final String original;
+  const ShelfTitle(this.original);
+
+  static ShelfTitle fromString(String title) {
+    return ShelfTitle.values.firstWhere((e) => e.original == title);
+  }
+}
+
+enum SubTitle {
+  video("Video"),
+  song("Song"),
+  album("Album"),
+  artist("Artist"),
+  playlist("Playlist"),
+  podcast("Podcast"),
+  episode("Episode"),
+  profile("Profile");
+
+  final String original;
+  const SubTitle(this.original);
+
+  static SubTitle fromString(String title) {
+    return SubTitle.values.firstWhere((e) => e.original == title);
+  }
+}
 
 final class SearchApiHandler extends ApiHandler {
   SearchApiHandler({required super.dio});
@@ -26,10 +65,10 @@ final class SearchApiHandler extends ApiHandler {
             ?["musicThumbnailRenderer"]["thumbnail"]["thumbnails"]
         .last["url"];
     final subtitleRuns = musicCardShelfRenderer["subtitle"]?["runs"];
-    final String subtitle = subtitleRuns?.first?["text"];
+    final subtitle = SubTitle.fromString(subtitleRuns?.first?["text"]);
 
     switch (subtitle) {
-      case "Video":
+      case SubTitle.video:
         return VideoSearchResult(
           id: videoId,
           name: titleRun?["text"],
@@ -40,7 +79,7 @@ final class SearchApiHandler extends ApiHandler {
           thumbnail: thumbnail,
           views: subtitleRuns?[4]?["text"]?.replaceAll(' views', ''),
         );
-      case "Song":
+      case SubTitle.song:
         return SongSearchResult(
           id: videoId,
           name: titleRun?["text"],
@@ -53,7 +92,7 @@ final class SearchApiHandler extends ApiHandler {
           duration: ParseDuration.fromString(subtitleRuns?.last?["text"]),
           thumbnail: thumbnail,
         );
-      case "Album":
+      case SubTitle.album:
         return AlbumSearchResult(
           id: browseId,
           name: titleRun?["text"],
@@ -64,7 +103,7 @@ final class SearchApiHandler extends ApiHandler {
           isSingle: subtitleRuns?.first?["text"] == "Single",
           thumbnail: thumbnail,
         );
-      case "Episode":
+      case SubTitle.episode:
         return EpisodeSearchResult(
           id: videoId,
           name: titleRun?["text"],
@@ -74,7 +113,7 @@ final class SearchApiHandler extends ApiHandler {
           thumbnail: thumbnail,
           published: DateTime.parse(subtitleRuns?[2]?["text"] ?? ''),
         );
-      case "Artist":
+      case SubTitle.artist:
         return ArtistSearchResult(
           id: browseId,
           name: titleRun?["text"],
@@ -89,7 +128,7 @@ final class SearchApiHandler extends ApiHandler {
 
   SearchResult? _parseShelf(
     Map<String, dynamic> shelfContent,
-    String shelfTitle,
+    ShelfTitle shelfTitle,
   ) {
     final shelfListItem = shelfContent["musicResponsiveListItemRenderer"];
     final shelfColumns = shelfListItem?["flexColumns"];
@@ -111,7 +150,7 @@ final class SearchApiHandler extends ApiHandler {
         shelfListItem["menu"]?["menuRenderer"]?["items"] as List?;
 
     switch (shelfTitle) {
-      case "Songs":
+      case ShelfTitle.songs:
         return SongSearchResult(
           thumbnail: thumbnail,
           name: titleRun?["text"],
@@ -125,7 +164,7 @@ final class SearchApiHandler extends ApiHandler {
               ?["browseId"],
         );
 
-      case "Albums":
+      case ShelfTitle.albums:
         {
           return AlbumSearchResult(
             name: titleRun?["text"],
@@ -146,7 +185,7 @@ final class SearchApiHandler extends ApiHandler {
           );
         }
 
-      case "Community playlists":
+      case ShelfTitle.playlists:
         return PlaylistSearchResult(
           name: titleRun?["text"],
           id: browseId,
@@ -157,7 +196,7 @@ final class SearchApiHandler extends ApiHandler {
           thumbnail: thumbnail,
         );
 
-      case "Videos":
+      case ShelfTitle.videos:
         return VideoSearchResult(
           id: titleRun?["navigationEndpoint"]?["watchEndpoint"]?["videoId"],
           name: titleRun?["text"],
@@ -169,7 +208,7 @@ final class SearchApiHandler extends ApiHandler {
           duration: ParseDuration.fromString(columnRun?.last?["text"]),
         );
 
-      case "Artists":
+      case ShelfTitle.artists:
         return ArtistSearchResult(
           id: browseId,
           name: titleRun?["text"],
@@ -177,7 +216,7 @@ final class SearchApiHandler extends ApiHandler {
           subscribers: columnRun.last?["text"]?.replaceAll(' subscribers', ''),
         );
 
-      case "Episodes":
+      case ShelfTitle.episodes:
         return EpisodeSearchResult(
           name: titleRun?["text"],
           id: titleRun?["navigationEndpoint"]?["browseEndpoint"]?["browseId"],
@@ -188,7 +227,7 @@ final class SearchApiHandler extends ApiHandler {
           published: DateTime.parse(columnRun[2]?["text"] ?? ''),
         );
 
-      case "Podcasts":
+      case ShelfTitle.podcasts:
         return PodcastSearchResult(
           name: titleRun?["text"],
           id: browseId,
@@ -198,7 +237,7 @@ final class SearchApiHandler extends ApiHandler {
           thumbnail: thumbnail,
         );
 
-      case "Profiles":
+      case ShelfTitle.profiles:
         return ProfileSearchResult(
           name: titleRun?["text"],
           id: browseId,
@@ -211,14 +250,14 @@ final class SearchApiHandler extends ApiHandler {
     }
   }
 
-  SearchResponse _parseResponse(Map<String, dynamic> data) {
+  SearchResponse _parseResponse(Map<String, dynamic> data, String query) {
     final List contents = data["contents"]?["tabbedSearchResultsRenderer"]
                     ?["tabs"]
                 ?.first?["tabRenderer"]?["content"]?["sectionListRenderer"]
             ?["contents"] ??
         [];
 
-    SearchResult? topResult = null;
+    SearchResult? topResult;
     VideoSearchResultGroup? videosGroup;
     SongSearchResultGroup? songsGroup;
     AlbumSearchResultGroup? albumsGroup;
@@ -257,14 +296,15 @@ final class SearchApiHandler extends ApiHandler {
       final params = content["musicShelfRenderer"]?["bottomEndpoint"]
           ?["searchEndpoint"]?["params"];
 
-      final shelfParsedItem =
-          shelfContents.map((s) => _parseShelf(s, shelfTitle)).toList();
+      final shelfParsedItem = shelfContents
+          .map((s) => _parseShelf(s, ShelfTitle.fromString(shelfTitle)))
+          .toList();
 
       switch (shelfTitle) {
         case "Videos":
           {
             videosGroup = VideoSearchResultGroup(
-              title: shelfTitle,
+              query: query,
               params: params,
               items: shelfParsedItem.whereType<VideoSearchResult>().toList(),
             );
@@ -273,7 +313,7 @@ final class SearchApiHandler extends ApiHandler {
         case "Songs":
           {
             songsGroup = SongSearchResultGroup(
-              title: shelfTitle,
+              query: query,
               params: params,
               items: shelfParsedItem.whereType<SongSearchResult>().toList(),
             );
@@ -282,7 +322,7 @@ final class SearchApiHandler extends ApiHandler {
         case "Albums":
           {
             albumsGroup = AlbumSearchResultGroup(
-              title: shelfTitle,
+              query: query,
               params: params,
               items: shelfParsedItem.whereType<AlbumSearchResult>().toList(),
             );
@@ -291,7 +331,7 @@ final class SearchApiHandler extends ApiHandler {
         case "Artists":
           {
             artistsGroup = ArtistSearchResultGroup(
-              title: shelfTitle,
+              query: query,
               params: params,
               items: shelfParsedItem.whereType<ArtistSearchResult>().toList(),
             );
@@ -300,7 +340,7 @@ final class SearchApiHandler extends ApiHandler {
         case "Community playlists":
           {
             playlistsGroup = PlaylistSearchResultGroup(
-              title: shelfTitle,
+              query: query,
               params: params,
               items: shelfParsedItem.whereType<PlaylistSearchResult>().toList(),
             );
@@ -309,7 +349,7 @@ final class SearchApiHandler extends ApiHandler {
         case "Podcasts":
           {
             podcastsGroup = PodcastSearchResultGroup(
-              title: shelfTitle,
+              query: query,
               params: params,
               items: shelfParsedItem.whereType<PodcastSearchResult>().toList(),
             );
@@ -318,7 +358,7 @@ final class SearchApiHandler extends ApiHandler {
         case "Episodes":
           {
             episodesGroup = EpisodeSearchResultGroup(
-              title: shelfTitle,
+              query: query,
               params: params,
               items: shelfParsedItem.whereType<EpisodeSearchResult>().toList(),
             );
@@ -327,7 +367,7 @@ final class SearchApiHandler extends ApiHandler {
         case "Profiles":
           {
             profilesGroup = ProfileSearchResultGroup(
-              title: shelfTitle,
+              query: query,
               params: params,
               items: shelfParsedItem.whereType<ProfileSearchResult>().toList(),
             );
@@ -363,7 +403,64 @@ final class SearchApiHandler extends ApiHandler {
       },
     );
 
-    final data = _parseResponse(response.data);
+    final data = _parseResponse(response.data, query);
     return data;
+  }
+
+  Future<SearchResultGroup> expandSearch(SearchResultGroup group) async {
+    final SearchResultGroup(:params, :query) = group;
+
+    final response = await dio.post(
+      '/search',
+      data: {
+        "context": {
+          "client": {
+            "clientName": "WEB_REMIX",
+            "clientVersion": "1.20230724.00.00"
+          }
+        },
+        "params": params,
+        "query": query
+      },
+    );
+
+    final content = response
+        .data?['contents']?['tabbedSearchResultsRenderer']?['tabs']
+        ?.first?['tabRenderer']?['content']?['sectionListRenderer']?['contents']
+        ?.first['musicShelfRenderer'];
+
+    final shelfTitle =
+        ShelfTitle.fromString(content?['title']?['runs']?.first?['text']);
+
+    switch (shelfTitle) {
+      case ShelfTitle.songs:
+      case ShelfTitle.videos:
+      case ShelfTitle.podcasts:
+      case ShelfTitle.episodes:
+      case ShelfTitle.playlists:
+        // Manually adding the title to the first item of flexColumn's subtitle
+        // to allow parsing of the content correctly
+        content?['contents']?.forEach((shelfContent) {
+          final List? columnRun =
+              shelfContent['musicResponsiveListItemRenderer']?['flexColumns']
+                      ?.last?['musicResponsiveListItemFlexColumnRenderer']
+                  ?['text']?['runs'] as List?;
+
+          columnRun?.insertAll(0, [
+            {"text": shelfTitle.original},
+            {"text": "."},
+          ]);
+        });
+        break;
+      default:
+        break;
+    }
+
+    final results = content?['contents']
+        ?.map((s) => _parseShelf(s, shelfTitle))
+        .whereType<SearchResult>()
+        .toList();
+
+    return group.copyWith(items: results);
   }
 }

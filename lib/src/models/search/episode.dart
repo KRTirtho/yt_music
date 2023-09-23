@@ -32,7 +32,7 @@ final class EpisodeSearchResultGroup extends SearchResultGroup {
       super.items as List<EpisodeSearchResult>;
 
   EpisodeSearchResultGroup({
-    required super.title,
+    required super.query,
     required super.params,
     required super.items,
   });

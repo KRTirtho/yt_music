@@ -33,7 +33,7 @@ final class PlaylistSearchResultGroup extends SearchResultGroup {
       super.items as List<PlaylistSearchResult>;
 
   PlaylistSearchResultGroup({
-    required super.title,
+    required super.query,
     required super.params,
     required super.items,
   });

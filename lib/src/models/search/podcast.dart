@@ -31,7 +31,7 @@ final class PodcastSearchResultGroup extends SearchResultGroup {
       super.items as List<PodcastSearchResult>;
 
   PodcastSearchResultGroup({
-    required super.title,
+    required super.query,
     required super.params,
     required super.items,
   });

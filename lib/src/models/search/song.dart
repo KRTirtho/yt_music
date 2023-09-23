@@ -42,7 +42,7 @@ final class SongSearchResultGroup extends SearchResultGroup {
   List<SongSearchResult> get items => super.items as List<SongSearchResult>;
 
   SongSearchResultGroup({
-    required super.title,
+    required super.query,
     required super.params,
     required super.items,
   });

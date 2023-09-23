@@ -25,7 +25,7 @@ Map<String, dynamic> _$ArtistSearchResultToJson(ArtistSearchResult instance) =>
 ArtistSearchResultGroup _$ArtistSearchResultGroupFromJson(
         Map<String, dynamic> json) =>
     ArtistSearchResultGroup(
-      title: json['title'] as String,
+      query: json['query'] as String,
       params: json['params'] as String,
       items: (json['items'] as List<dynamic>)
           .map((e) => SearchResult.fromJson(e as Map<String, dynamic>))
@@ -35,7 +35,7 @@ ArtistSearchResultGroup _$ArtistSearchResultGroupFromJson(
 Map<String, dynamic> _$ArtistSearchResultGroupToJson(
         ArtistSearchResultGroup instance) =>
     <String, dynamic>{
-      'title': instance.title,
+      'query': instance.query,
       'params': instance.params,
       'items': instance.items,
     };

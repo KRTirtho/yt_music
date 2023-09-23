@@ -27,7 +27,7 @@ final class ArtistSearchResultGroup extends SearchResultGroup {
   List<ArtistSearchResult> get items => super.items as List<ArtistSearchResult>;
 
   ArtistSearchResultGroup({
-    required super.title,
+    required super.query,
     required super.params,
     required super.items,
   });

@@ -30,7 +30,7 @@ Map<String, dynamic> _$EpisodeSearchResultToJson(
 EpisodeSearchResultGroup _$EpisodeSearchResultGroupFromJson(
         Map<String, dynamic> json) =>
     EpisodeSearchResultGroup(
-      title: json['title'] as String,
+      query: json['query'] as String,
       params: json['params'] as String,
       items: (json['items'] as List<dynamic>)
           .map((e) => SearchResult.fromJson(e as Map<String, dynamic>))
@@ -40,7 +40,7 @@ EpisodeSearchResultGroup _$EpisodeSearchResultGroupFromJson(
 Map<String, dynamic> _$EpisodeSearchResultGroupToJson(
         EpisodeSearchResultGroup instance) =>
     <String, dynamic>{
-      'title': instance.title,
+      'query': instance.query,
       'params': instance.params,
       'items': instance.items,
     };
