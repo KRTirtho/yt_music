@@ -15,7 +15,7 @@ SongEntity _$SongEntityFromJson(Map<String, dynamic> json) => SongEntity(
       albumName: json['albumName'] as String,
       albumId: json['albumId'] as String,
       duration: ParseDuration.fromString(json['duration'] as String),
-      stream: StreamEntity.fromJson(json['stream'] as Map<String, dynamic>),
+      year: json['year'] as int,
     );
 
 Map<String, dynamic> _$SongEntityToJson(SongEntity instance) =>
@@ -27,6 +27,6 @@ Map<String, dynamic> _$SongEntityToJson(SongEntity instance) =>
       'artistId': instance.artistId,
       'albumName': instance.albumName,
       'albumId': instance.albumId,
+      'year': instance.year,
       'duration': instance.duration.inMicroseconds,
-      'stream': instance.stream,
     };

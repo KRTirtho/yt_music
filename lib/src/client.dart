@@ -1,7 +1,12 @@
-import 'package:dio/dio.dart';
+import 'dart:convert';
 
-final dio = Dio(
-  BaseOptions(
+import 'package:dio/dio.dart';
+import 'package:yt_music/src/search.dart';
+import 'package:yt_music/src/songs.dart';
+import 'package:yt_music/src/streams.dart';
+
+class YTMusicClient {
+  static final defaultBaseOptions = BaseOptions(
     baseUrl: 'https://youtubei.googleapis.com/youtubei/v1',
     headers: {
       'Content-Type': 'application/json',
@@ -16,5 +21,17 @@ final dio = Dio(
     },
     method: 'POST',
     responseType: ResponseType.json,
-  ),
-);
+  );
+
+  final Dio _dio;
+  late final SearchApiHandler search;
+  late final SongsApiHandler songs;
+  late final StreamsApiHandler streams;
+
+  YTMusicClient({BaseOptions? baseOptions})
+      : _dio = Dio(baseOptions ?? defaultBaseOptions) {
+    search = SearchApiHandler(dio: _dio);
+    songs = SongsApiHandler(dio: _dio);
+    streams = StreamsApiHandler(dio: _dio);
+  }
+}

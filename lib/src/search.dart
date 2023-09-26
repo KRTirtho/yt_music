@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:yt_music/src/client.dart';
+import 'package:yt_music/src/constants.dart';
 import 'package:yt_music/src/extensions/duration.dart';
 import 'package:yt_music/src/handler.dart';
 import 'package:yt_music/src/models/search/album.dart';
@@ -393,13 +394,8 @@ final class SearchApiHandler extends ApiHandler {
     final response = await dio.post(
       '/search',
       data: {
-        "context": {
-          "client": {
-            "clientName": "WEB_REMIX",
-            "clientVersion": "1.20230724.00.00"
-          }
-        },
-        "query": query
+        "context": kClientContext,
+        "query": query,
       },
     );
 
@@ -413,14 +409,9 @@ final class SearchApiHandler extends ApiHandler {
     final response = await dio.post(
       '/search',
       data: {
-        "context": {
-          "client": {
-            "clientName": "WEB_REMIX",
-            "clientVersion": "1.20230724.00.00"
-          }
-        },
+        "context": kClientContext,
         "params": params,
-        "query": query
+        "query": query,
       },
     );
 

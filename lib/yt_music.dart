@@ -1,7 +1,18 @@
 library yt_music;
 
-/// A Calculator.
-class Calculator {
-  /// Returns [value] plus 1.
-  int addOne(int value) => value + 1;
-}
+export 'src/client.dart';
+
+export 'src/models/entity/entity.dart';
+export 'src/models/entity/song.dart';
+export 'src/models/entity/stream.dart';
+
+export 'src/models/search/album.dart';
+export 'src/models/search/artist.dart';
+export 'src/models/search/episode.dart';
+export 'src/models/search/group.dart';
+export 'src/models/search/playlist.dart';
+export 'src/models/search/podcast.dart';
+export 'src/models/search/profile.dart';
+export 'src/models/search/result.dart';
+export 'src/models/search/song.dart';
+export 'src/models/search/video.dart';

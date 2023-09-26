@@ -4,10 +4,10 @@ part 'stream.g.dart';
 
 @JsonSerializable()
 class StreamEntity {
-  @JsonKey(fromJson: StreamEntity._parseExpiresIn)
+  @JsonKey(name: 'expiresInSeconds', fromJson: StreamEntity._parseExpiresIn)
   final Duration expiresIn;
   final List<StreamFormat> formats;
-  final List<StreamFormat> adaptiveFormats;
+  final List<AdaptiveStreamFormat> adaptiveFormats;
 
   StreamEntity({
     required this.expiresIn,
@@ -29,15 +29,16 @@ class StreamEntity {
 class StreamFormat {
   final int itag;
   final int bitrate;
-  final int width;
-  final int height;
-  final int fps;
-  final int audioChannels;
+  final int? width;
+  final int? height;
+  final int? fps;
 
-  @JsonKey(fromJson: int.parse)
+  final int? audioChannels;
+
+  @JsonKey(fromJson: StreamFormat._parseNullableStringInt)
   final int? audioSampleRate;
 
-  @JsonKey(fromJson: DateTime.parse)
+  @JsonKey(fromJson: StreamFormat._parseStingTimeStamp)
   final DateTime lastModified;
 
   @JsonKey(
@@ -48,14 +49,10 @@ class StreamFormat {
 
   final String mimeType;
   final String quality;
-  final String xtags;
-  final String qualityLabel;
+  final String? xtags;
+  final String? qualityLabel;
   final String projectionType;
-  final String audioQuality;
-
-  final String? averageBitrate;
-
-  final bool? highReplication;
+  final String? audioQuality;
 
   @JsonKey(
     name: 'signatureCipher',
@@ -80,8 +77,6 @@ class StreamFormat {
     required this.projectionType,
     required this.audioQuality,
     required this.url,
-    this.averageBitrate,
-    this.highReplication,
   });
 
   factory StreamFormat.fromJson(Map<String, dynamic> json) =>
@@ -89,12 +84,73 @@ class StreamFormat {
 
   Map<String, dynamic> toJson() => _$StreamFormatToJson(this);
 
-  static Duration _parseApproxDurationMs(String value) {
-    final duration = Duration(milliseconds: int.parse(value));
-    return duration;
-  }
+  static Duration _parseApproxDurationMs(String value) =>
+      Duration(milliseconds: int.parse(value));
 
-  static String _parseSignatureCipher(String url) {
-    return Uri.parse(Uri.decodeComponent(url).split("&url=").last).toString();
-  }
+  static String _parseSignatureCipher(String url) =>
+      Uri.parse(Uri.decodeComponent(url).split("&url=").last).toString();
+
+  static DateTime _parseStingTimeStamp(d) =>
+      DateTime.fromMicrosecondsSinceEpoch(int.parse(d));
+  static int? _parseNullableStringInt(d) => d == null ? null : int.parse(d);
+}
+
+@JsonSerializable()
+class StreamByteRange {
+  @JsonKey(fromJson: int.parse)
+  final int start;
+  @JsonKey(fromJson: int.parse)
+  final int end;
+
+  StreamByteRange({
+    required this.start,
+    required this.end,
+  });
+
+  factory StreamByteRange.fromJson(Map<String, dynamic> json) =>
+      _$StreamByteRangeFromJson(json);
+
+  Map<String, dynamic> toJson() => _$StreamByteRangeToJson(this);
+}
+
+@JsonSerializable()
+class AdaptiveStreamFormat extends StreamFormat {
+  final StreamByteRange initRange;
+
+  final StreamByteRange indexRange;
+
+  final String contentLength;
+
+  final int averageBitrate;
+
+  final bool? highReplication;
+
+  AdaptiveStreamFormat({
+    required super.itag,
+    required super.bitrate,
+    required super.width,
+    required super.height,
+    required super.fps,
+    required super.audioChannels,
+    required super.audioSampleRate,
+    required super.lastModified,
+    required super.approxDuration,
+    required super.mimeType,
+    required super.quality,
+    required super.xtags,
+    required super.qualityLabel,
+    required super.projectionType,
+    required super.audioQuality,
+    required super.url,
+    required this.contentLength,
+    required this.initRange,
+    required this.indexRange,
+    required this.averageBitrate,
+    required this.highReplication,
+  });
+
+  factory AdaptiveStreamFormat.fromJson(Map<String, dynamic> json) =>
+      _$AdaptiveStreamFormatFromJson(json);
+
+  Map<String, dynamic> toJson() => _$AdaptiveStreamFormatToJson(this);
 }
