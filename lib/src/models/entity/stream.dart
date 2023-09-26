@@ -87,8 +87,51 @@ class StreamFormat {
   static Duration _parseApproxDurationMs(String value) =>
       Duration(milliseconds: int.parse(value));
 
-  static String _parseSignatureCipher(String url) =>
-      Uri.parse(Uri.decodeComponent(url).split("&url=").last).toString();
+  static String _decipherSignature(String a) {
+    final EP = (
+      O9: (List<String> a, int b) {
+        var c = a[0];
+        a[0] = a[b % a.length];
+        a[b % a.length] = c;
+      },
+      IP: (List<String> a, int b) {
+        a.removeRange(0, b);
+      },
+      de: (List<String> a) {
+        a = a.reversed.toList();
+      }
+    );
+    var chars = a.split('');
+    EP.de(chars);
+    EP.O9(chars, 10);
+    EP.IP(chars, 1);
+    EP.O9(chars, 48);
+    EP.O9(chars, 62);
+    EP.IP(chars, 2);
+    EP.O9(chars, 25);
+    EP.de(chars);
+    EP.IP(chars, 1);
+    return chars.join('');
+  }
+
+  static String _parseSignatureCipher(String signatureCipher) {
+    final queryStrings = Map.fromEntries(
+      signatureCipher.split("&").map((e) {
+        final split = e.split("=");
+        return MapEntry(split.first, split.last);
+      }),
+    );
+
+    Uri url = Uri.parse(Uri.decodeComponent(queryStrings["url"]!));
+    url = url.replace(
+      queryParameters: {
+        ...url.queryParameters,
+        queryStrings["sp"]!: _decipherSignature(queryStrings["s"]!)
+      },
+    );
+
+    return url.toString();
+  }
 
   static DateTime _parseStingTimeStamp(d) =>
       DateTime.fromMicrosecondsSinceEpoch(int.parse(d));
